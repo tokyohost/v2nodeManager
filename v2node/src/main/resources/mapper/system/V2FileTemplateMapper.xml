@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.V2FileTemplateMapper">
+    
+    <resultMap type="V2FileTemplate" id="V2FileTemplateResult">
+        <result property="id"    column="id"    />
+        <result property="content"    column="content"    />
+        <result property="remark"    column="remark"    />
+        <result property="fileName"    column="file_name"    />
+    </resultMap>
+
+    <sql id="selectV2FileTemplateVo">
+        select id, content, remark ,file_name from v2_file_template
+    </sql>
+
+    <select id="selectV2FileTemplateList" parameterType="V2FileTemplate" resultMap="V2FileTemplateResult">
+        <include refid="selectV2FileTemplateVo"/>
+        <where>  
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+    </select>
+    
+    <select id="selectV2FileTemplateById" parameterType="Long" resultMap="V2FileTemplateResult">
+        <include refid="selectV2FileTemplateVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertV2FileTemplate" parameterType="V2FileTemplate" useGeneratedKeys="true" keyProperty="id">
+        insert into v2_file_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="content != null">content,</if>
+            <if test="remark != null">remark,</if>
+            <if test="fileName != null">file_name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="content != null">#{content},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="fileName != null">#{fileName},</if>
+         </trim>
+    </insert>
+
+    <update id="updateV2FileTemplate" parameterType="V2FileTemplate">
+        update v2_file_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="content != null">content = #{content},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="fileName != null">file_name = #{fileName},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteV2FileTemplateById" parameterType="Long">
+        delete from v2_file_template where id = #{id}
+    </delete>
+
+    <delete id="deleteV2FileTemplateByIds" parameterType="String">
+        delete from v2_file_template where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

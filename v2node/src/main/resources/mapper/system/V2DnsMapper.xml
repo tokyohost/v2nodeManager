@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.V2DnsMapper">
+    
+    <resultMap type="V2Dns" id="V2DnsResult">
+        <result property="id"    column="id"    />
+        <result property="zoneId"    column="zone_id"    />
+        <result property="zoneName"    column="zone_name"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="content"    column="content"    />
+        <result property="proxiable"    column="proxiable"    />
+        <result property="proxied"    column="proxied"    />
+        <result property="ttl"    column="ttl"    />
+    </resultMap>
+
+    <sql id="selectV2DnsVo">
+        select id, zone_id, zone_name, `name`, type, content, proxiable, proxied, ttl from v2_dns
+    </sql>
+
+    <select id="selectV2DnsList" parameterType="V2Dns" resultMap="V2DnsResult">
+        <include refid="selectV2DnsVo"/>
+        <where>  
+            <if test="zoneId != null  and zoneId != ''"> and zone_id = #{zoneId}</if>
+            <if test="zoneName != null  and zoneName != ''"> and zone_name like concat('%', #{zoneName}, '%')</if>
+            <if test="name != null  and name != ''"> and `name` like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="content != null  and content != ''"> and content like concat('%', #{content}, '%')</if>
+            <if test="proxiable != null  and proxiable != ''"> and proxiable = #{proxiable}</if>
+            <if test="proxied != null  and proxied != ''"> and proxied = #{proxied}</if>
+            <if test="ttl != null "> and ttl = #{ttl}</if>
+            <if test="remark != null "> and remark like concat('%', #{remark}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectV2DnsById" parameterType="java.lang.String" resultMap="V2DnsResult">
+        <include refid="selectV2DnsVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertV2Dns" parameterType="V2Dns" useGeneratedKeys="true" keyProperty="id">
+        insert into v2_dns
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="zoneId != null">zone_id,</if>
+            <if test="zoneName != null">zone_name,</if>
+            <if test="name != null">`name`,</if>
+            <if test="type != null">type,</if>
+            <if test="content != null">content,</if>
+            <if test="proxiable != null">proxiable,</if>
+            <if test="proxied != null">proxied,</if>
+            <if test="ttl != null">ttl,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="zoneId != null">#{zoneId},</if>
+            <if test="zoneName != null">#{zoneName},</if>
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="content != null">#{content},</if>
+            <if test="proxiable != null">#{proxiable},</if>
+            <if test="proxied != null">#{proxied},</if>
+            <if test="ttl != null">#{ttl},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateV2Dns" parameterType="V2Dns">
+        update v2_dns
+        <trim prefix="SET" suffixOverrides=",">=
+            <if test="zoneId != null">zone_id = #{zoneId},</if>
+            <if test="zoneName != null">zone_name = #{zoneName},</if>
+            <if test="name != null">`name` = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="proxiable != null">proxiable = #{proxiable},</if>
+            <if test="proxied != null">proxied = #{proxied},</if>
+            <if test="ttl != null">ttl = #{ttl},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteV2DnsById" parameterType="java.lang.String">
+        delete from v2_dns where id = #{id}
+    </delete>
+
+    <delete id="deleteV2DnsByIds" parameterType="String">
+        delete from v2_dns where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectV2DnsByName" resultMap="V2DnsResult">
+        <include refid="selectV2DnsVo"/>
+        where `name` = #{name}
+    </select>
+</mapper>

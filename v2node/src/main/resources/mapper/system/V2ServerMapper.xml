@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.V2ServerMapper">
+    
+    <resultMap type="V2Server" id="V2ServerResult">
+        <result property="id"    column="id"    />
+        <result property="ip"    column="ip"    />
+        <result property="port"    column="port"    />
+        <result property="user"    column="user"    />
+        <result property="passwd"    column="passwd"    />
+        <result property="nodeId"    column="node_id"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+    <resultMap type="V2Node" id="V2NodeResult">
+        <result property="id"    column="id"    />
+        <result property="groupId"    column="group_id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="host"    column="host"    />
+        <result property="port"    column="port"    />
+        <result property="serverPort"    column="server_port"    />
+        <result property="tls"    column="tls"    />
+        <result property="network"    column="network"    />
+        <result property="alertId"    column="alert_id"    />
+        <result property="networkSettings"    column="networkSettings"    />
+        <result property="ruleSettings"    column="ruleSettings"    />
+        <result property="dnsSettings"    column="dnsSettings"    />
+    </resultMap>
+
+    <sql id="selectV2ServerVo">
+        select id, ip, port, user, passwd, node_id, file_path,remark from v2_server
+    </sql>
+
+    <select id="selectV2ServerList" parameterType="V2Server" resultMap="V2ServerResult">
+        <include refid="selectV2ServerVo"/>
+        <where>  
+            <if test="ip != null  and ip != ''"> and ip = #{ip}</if>
+            <if test="port != null  and port != ''"> and port = #{port}</if>
+            <if test="user != null  and user != ''"> and user = #{user}</if>
+            <if test="passwd != null  and passwd != ''"> and passwd = #{passwd}</if>
+            <if test="nodeId != null "> and node_id = #{nodeId}</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+        </where>
+    </select>
+    
+    <select id="selectV2ServerById" parameterType="Long" resultMap="V2ServerResult">
+        <include refid="selectV2ServerVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertV2Server" parameterType="V2Server" useGeneratedKeys="true" keyProperty="id">
+        insert into v2_server
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ip != null">ip,</if>
+            <if test="port != null">port,</if>
+            <if test="user != null">user,</if>
+            <if test="passwd != null">passwd,</if>
+            <if test="nodeId != null">node_id,</if>
+            <if test="filePath != null">file_path,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ip != null">#{ip},</if>
+            <if test="port != null">#{port},</if>
+            <if test="user != null">#{user},</if>
+            <if test="passwd != null">#{passwd},</if>
+            <if test="nodeId != null">#{nodeId},</if>
+            <if test="filePath != null">#{filePath},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateV2Server" parameterType="V2Server">
+        update v2_server
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ip != null">ip = #{ip},</if>
+            <if test="port != null">port = #{port},</if>
+            <if test="user != null">user = #{user},</if>
+            <if test="passwd != null">passwd = #{passwd},</if>
+            <if test="nodeId != null">node_id = #{nodeId},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteV2ServerById" parameterType="Long">
+        delete from v2_server where id = #{id}
+    </delete>
+
+    <delete id="deleteV2ServerByIds" parameterType="String">
+        delete from v2_server where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectV2ServerByIp" resultMap="V2ServerResult">
+        select * from v2_server where ip = #{ip}
+    </select>
+
+    <select id="selectV2NodeInfoByNodeId" resultMap="V2NodeResult">
+        select * from v2_server_v2ray where id = #{nodeId}
+
+
+    </select>
+
+    <update id="updateV2Node">
+        update v2_server_v2ray set host=#{content} where id = #{nodeId}
+    </update>
+
+    <select id="selectV2NodeInfoByNodeIds" resultMap="V2NodeResult">
+        select * from v2_server_v2ray where id in
+        <foreach collection="nodeids" item="id" open="(" close=")" separator="," >
+            #{id}
+        </foreach>
+
+
+    </select>
+</mapper>

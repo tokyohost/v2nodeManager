@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.V2DomainMapper">
+    
+    <resultMap type="V2Domain" id="V2DomainResult">
+        <result property="id"    column="id"    />
+        <result property="domainId"    column="domain_id"    />
+        <result property="name"    column="name"    />
+        <result property="status"    column="status"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectV2DomainVo">
+        select id, domain_id, name, status, type from v2_domain
+    </sql>
+
+    <select id="selectV2DomainList" parameterType="V2Domain" resultMap="V2DomainResult">
+        <include refid="selectV2DomainVo"/>
+        <where>  
+            <if test="domainId != null  and domainId != ''"> and domain_id = #{domainId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+    </select>
+    
+    <select id="selectV2DomainById" parameterType="Long" resultMap="V2DomainResult">
+        <include refid="selectV2DomainVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertV2Domain" parameterType="V2Domain">
+        insert into v2_domain
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="domainId != null">domain_id,</if>
+            <if test="name != null">name,</if>
+            <if test="status != null">status,</if>
+            <if test="type != null">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="domainId != null">#{domainId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="status != null">#{status},</if>
+            <if test="type != null">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateV2Domain" parameterType="V2Domain">
+        update v2_domain
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="domainId != null">domain_id = #{domainId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteV2DomainById" parameterType="Long">
+        delete from v2_domain where id = #{id}
+    </delete>
+
+    <delete id="deleteV2DomainByIds" parameterType="String">
+        delete from v2_domain where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
