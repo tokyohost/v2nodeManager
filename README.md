@@ -51,11 +51,11 @@ DNS 解析列表，可快速新增DNS解析、可快速生成对应的XrayR配�
     </tr>
     <tr>
         <td>${cfEmail}</td>
-        <td>在系统管理-> 系统参数管理里面配置</td>
+        <td>在系统管理-> 参数设置里面配置</td>
     </tr>
     <tr>
         <td>${cfToken}</td>
-        <td>在系统管理-> 系统参数管理里面配置</td>
+        <td>在系统管理-> 参数设置里面配置</td>
     </tr>
    
 </table>
@@ -138,7 +138,7 @@ redis 7.0
 
 ```
 
-5. nginx 配置
+6. nginx 配置
 ```nginx
         location / {
             root  /www/wwwroot/yourdomain/dist;
@@ -157,6 +157,15 @@ redis 7.0
 ```yaml
 默认账号密码 admin/admin@2024
 ```
+7.CF apiToken 获取
+
+```yaml
+登录CF 后 My Profile -> API Tokens -> Create API Token -> 选择 Edit zone DNS 项 ->Zone Resources 项下 选择 Include All zones -> createToken 完成
+
+获取后在 系统管理-> 参数设置 ->  cfkey 配置；同时需要配置 cfEmail ，你的cf 登录邮箱
+
+```
+
 
 ## 可能的功能规划
 
