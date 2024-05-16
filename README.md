@@ -154,7 +154,9 @@ redis 7.0
 		proxy_pass http://localhost:8088/;
 	}
 ```
-
+```yaml
+默认账号密码 admin/admin@2024
+```
 
 ## 可能的功能规划
 
