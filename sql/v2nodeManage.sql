@@ -939,4 +939,8 @@ CREATE TABLE `v2_server`  (
 -- Records of v2_server
 -- ----------------------------
 
+
+INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (105, 'XrayRCheckVersion', 'XrayRCheckVersion', 'XrayR version', 'Y', 'admin', '2024-06-12 10:19:15', '', NULL, NULL);
+INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (106, 'XrayRUpdateVersion', 'XrayRUpdateVersion', 'nohup XrayR update {version}  &', 'Y', 'admin', '2024-06-12 10:19:57', 'admin', '2024-06-12 10:38:48', NULL);
+
 SET FOREIGN_KEY_CHECKS = 1;
