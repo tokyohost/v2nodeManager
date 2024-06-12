@@ -95,6 +95,18 @@
           <el-button
             size="mini"
             type="text"
+            @click="installStatus(scope.row)"
+            v-hasPermi="['system:server:check']"
+          >安装XrayR</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="updateVersion(scope.row)"
+            v-hasPermi="['system:server:check']"
+          >切换XrayR版本</el-button>
+          <el-button
+            size="mini"
+            type="text"
             @click="replaceHostPanel(scope.row)"
             v-hasPermi="['system:server:replaceHost']"
           >一键更换域名</el-button>
@@ -207,7 +219,7 @@ import {
   addServer,
   updateServer,
   checkInstallStatus,
-  installStatus, quickHostReplace
+  installStatus, quickHostReplace, updateVersion
 } from '@/api/system/server'
 import { Loading } from 'element-ui'
 import { listDomainAll } from '@/api/system/domain'
@@ -479,17 +491,37 @@ export default {
           type: 'success',
           message: response.msg
         });
-        // this.$message.success(response.msg)
-        this.$confirm(response.msg, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-        }).catch(() => {
-        });
+
       }).catch((e)=>{
         loadingInstance.close()
       })
+    },
+    updateVersion(row) {
+      const ids = row.id
+      this.$prompt('请输入版本号', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /\w+/,
+        inputErrorMessage: '版本号不能为空'
+      }).then(({ value }) => {
+        let loadingInstance = Loading.service({ fullscreen: true ,text:"正在处理中..."});
+        updateVersion(ids,value).then(response=>{
+          console.log(response)
+          loadingInstance.close()
+          this.$message({
+            type: 'success',
+            message: response.msg
+          });
+
+        }).catch((e)=>{
+          loadingInstance.close()
+        })
+
+
+      }).catch(() => {
+
+      });
+
     },
     /** 导出按钮操作 */
     handleExport() {

@@ -111,6 +111,13 @@ public class V2ServerController extends BaseController
         return v2ServerService.installStatus(id);
     }
 
+    @PreAuthorize("@ss.hasPermi('system:server:query')")
+    @GetMapping(value = "/updateVersion/{id}")
+    public AjaxResult updateVersion(@PathVariable("id") Long id,String version)
+    {
+        return v2ServerService.updateVersion(id,version);
+    }
+
 
     @PreAuthorize("@ss.hasPermi('system:server:execFileReplace')")
     @GetMapping(value = "/execFileReplace")

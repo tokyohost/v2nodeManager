@@ -27,7 +27,7 @@ export function checkInstallStatus(id) {
   return request({
     url: '/system/server/checkInstallStatus/' + id,
     method: 'get',
-    timeout:30000
+    timeout:90000
   })
 }
 export function installStatus(id) {
@@ -35,6 +35,14 @@ export function installStatus(id) {
     url: '/system/server/installStatus/' + id,
     method: 'get',
     timeout:90000
+  })
+}
+export function updateVersion(id,version) {
+  return request({
+    url: '/system/server/updateVersion/' + id,
+    method: 'get',
+    timeout:180000,
+    params:{version:version}
   })
 }
 
@@ -51,7 +59,7 @@ export function quickHostReplace(data) {
     url: '/system/server/quickHostReplace',
     method: 'post',
     data: data,
-    timeout:90000
+    timeout:1800000
   })
 }
 

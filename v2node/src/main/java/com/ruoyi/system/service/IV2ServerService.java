@@ -79,4 +79,6 @@ public interface IV2ServerService
     List<V2Node> selectV2NodeInfoByNodeIds(List<Long> nodeids);
 
     AjaxResult quickHostReplace(V2Dns data);
+
+    AjaxResult updateVersion(Long id, String version);
 }
