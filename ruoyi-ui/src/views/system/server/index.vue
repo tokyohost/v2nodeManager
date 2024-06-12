@@ -61,13 +61,14 @@
 
     <el-table v-loading="loading" :data="serverList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="id" align="center" prop="id" />
+<!--      <el-table-column label="id" align="center" prop="id" />-->
       <el-table-column label="ip" align="center" prop="ip" />
       <el-table-column label="端口" align="center" prop="port" />
       <el-table-column label="用户名" align="center" prop="user" />
 <!--      <el-table-column label="passwd" align="center" prop="passwd" />-->
-      <el-table-column label="nodeId" align="center" prop="nodeId" />
-      <el-table-column label="nodeHost" align="center" prop="nodeHost" />
+      <el-table-column label="节点名称" align="center" prop="nodeName" />
+      <el-table-column label="节点ID" align="center" prop="nodeId" />
+      <el-table-column label="解析地址" align="center" prop="nodeHost" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -169,7 +170,7 @@
           </el-input>
         </el-form-item>
         <el-form-item label="是否代理" prop="proxied">
-          <el-select v-model="formQuickHost.proxied" placeholder="请选择">
+          <el-select v-model="formQuickHost.proxied" placeholder="请选择" @change="forceUpdate">
             <el-option
               v-for="item in proxyOptions"
               :key="item.value"
@@ -180,7 +181,7 @@
           <!--          <el-input v-model="form.proxied" placeholder="请输入是否代理" />-->
         </el-form-item>
         <el-form-item label="配置文件模板" prop="templateId">
-          <el-select v-model="formQuickHost.templateId" placeholder="请选择" filterable>
+          <el-select v-model="formQuickHost.templateId" placeholder="请选择" filterable @change="forceUpdate">
             <el-option
               v-for="item in templateOptions"
               :key="item.id"
@@ -334,6 +335,9 @@ export default {
         this.formQuickHost.name = response.msg
         this.$forceUpdate()
       })
+    },
+    forceUpdate() {
+      this.$forceUpdate()
     },
     // 取消按钮
     cancel() {
