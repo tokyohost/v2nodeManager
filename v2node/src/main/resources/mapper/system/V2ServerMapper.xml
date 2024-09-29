@@ -103,17 +103,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectV2NodeInfoByNodeId" resultMap="V2NodeResult">
-        select * from v2_server_v2ray where id = #{nodeId}
-
-
+        select * from v2_server_vmess where id = #{nodeId}
     </select>
 
     <update id="updateV2Node">
-        update v2_server_v2ray set host=#{content} where id = #{nodeId}
+        update v2_server_vmess set host=#{content} where id = #{nodeId}
     </update>
 
     <select id="selectV2NodeInfoByNodeIds" resultMap="V2NodeResult">
-        select * from v2_server_v2ray where id in
+        select * from v2_server_vmess where id in
         <foreach collection="nodeids" item="id" open="(" close=")" separator="," >
             #{id}
         </foreach>
