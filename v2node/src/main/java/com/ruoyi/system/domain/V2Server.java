@@ -46,6 +46,16 @@ public class V2Server extends BaseEntity
 
     private String nodeName;
 
+    private String nodeType;
+
+    public String getNodeType() {
+        return nodeType;
+    }
+
+    public void setNodeType(String nodeType) {
+        this.nodeType = nodeType;
+    }
+
     public String getNodeName() {
         return nodeName;
     }

@@ -141,10 +141,28 @@
           <el-input v-model="form.user" placeholder="请输入user" />
         </el-form-item>
         <el-form-item label="密码" prop="passwd">
-          <el-input v-model="form.passwd" placeholder="请输入passwd" />
+          <el-input v-model="form.passwd" placeholder="请输入passwd" show-password />
         </el-form-item>
-        <el-form-item label="nodeId" prop="nodeId">
-          <el-input v-model="form.nodeId" placeholder="请输入nodeId" />
+        <el-form-item label="节点类型" prop="nodeType">
+        <el-select v-model="form.nodeType" placeholder="请选择" @change="nodeTypeChange" clearable>
+          <el-option
+            v-for="item in nodeTypeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value" >
+          </el-option>
+        </el-select>
+        </el-form-item>
+        <el-form-item label="绑定节点" prop="nodeId">
+<!--          <el-input v-model="form.nodeId" placeholder="请输入nodeId" />-->
+          <el-select v-model="form.nodeId" placeholder="请选择绑定节点" clearable>
+            <el-option
+              v-for="item in nodeList"
+              :key="item.nodeId"
+              :label="item.name"
+              :value="item.nodeId" >
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="XrayR 配置文件路径" prop="filePath">
           <el-input v-model="form.filePath" placeholder="/etc/XrayR/config.yml" />
@@ -219,7 +237,7 @@ import {
   addServer,
   updateServer,
   checkInstallStatus,
-  installStatus, quickHostReplace, updateVersion
+  installStatus, quickHostReplace, updateVersion, getNodeList
 } from '@/api/system/server'
 import { Loading } from 'element-ui'
 import { listDomainAll } from '@/api/system/domain'
@@ -269,7 +287,16 @@ export default {
         nodeId: null
       },
       // 表单参数
-      form: {},
+      form: {
+        filePath:"/etc/XrayR/config.yml"
+      },
+      nodeTypeOptions: [
+        {
+          value: 'vmess',
+          label: 'vmess'
+        },
+      ],
+      nodeList: [],
       formQuickHost: {
         zoneName: '',
         name: '',
@@ -285,6 +312,9 @@ export default {
         ],
         user: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
+        ],
+        nodeType: [
+          { required: true, message: '请选择节点类型', trigger: 'blur' },
         ],
         passwd: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -323,6 +353,18 @@ export default {
         this.total = response.total;
         this.loading = false;
       });
+    },
+    nodeTypeChange(value) {
+      console.log(value)
+      let loadingInstance = Loading.service({ fullscreen: true });
+      getNodeList(value).then((res)=>{
+        console.log(res)
+        this.nodeList = res.data
+        loadingInstance.close();
+      }).catch((e)=>{
+        this.$message.error("查询失败")
+        loadingInstance.close();
+      })
     },
     cancelQuick() {
       this.form = {}
@@ -364,7 +406,8 @@ export default {
         port: null,
         user: null,
         passwd: null,
-        nodeId: null
+        nodeId: null,
+        filePath: "/etc/XrayR/config.yml"
       };
       this.resetForm("form");
     },

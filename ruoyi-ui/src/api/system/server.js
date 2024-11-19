@@ -5,14 +5,16 @@ export function listServer(query) {
   return request({
     url: '/system/server/list',
     method: 'get',
-    params: query
+    params: query,
+    timeout:90000
   })
 }
 export function listAllServer(query) {
   return request({
     url: '/system/server/listAll',
     method: 'get',
-    params: query
+    params: query,
+    timeout:45000
   })
 }
 
@@ -21,6 +23,14 @@ export function getServer(id) {
   return request({
     url: '/system/server/' + id,
     method: 'get'
+  })
+}
+export function getNodeList(type) {
+  return request({
+    url: '/system/server/queryV2NodeList',
+    method: 'get',
+    params:{nodeType:type},
+    timeout:90000
   })
 }
 export function checkInstallStatus(id) {

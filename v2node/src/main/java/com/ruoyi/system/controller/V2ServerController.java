@@ -141,6 +141,15 @@ public class V2ServerController extends BaseController
     public AjaxResult add(@RequestBody V2Server v2Server)
     {
         return toAjax(v2ServerService.insertV2Server(v2Server));
+    }    /**
+     * 新增【请填写功能名称】
+     */
+    @PreAuthorize("@ss.hasPermi('system:server:queryV2NodeList')")
+    @GetMapping(value = "/queryV2NodeList")
+    public AjaxResult queryV2NodeList( V2Server v2Server)
+    {
+
+        return v2ServerService.queryNodeList(v2Server);
     }
 
     /**
@@ -164,4 +173,6 @@ public class V2ServerController extends BaseController
     {
         return toAjax(v2ServerService.deleteV2ServerByIds(ids));
     }
+
+
 }

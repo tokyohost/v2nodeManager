@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.V2NodeVmessMapper">
+    
+    <resultMap type="NodeVo" id="V2DnsResult">
+        <result property="name"    column="name"    />
+        <result property="currentDns"    column="currentDns"    />
+        <result property="nodeId"    column="nodeId"    />
+    </resultMap>
+
+    <sql id="selectV2NodeVo">
+        select id as nodeId,name,host as currentDns from v2_server_vmess
+    </sql>
+
+    <select id="selectV2DnsList" parameterType="V2Dns" resultMap="V2DnsResult">
+        <include refid="selectV2NodeVo"/>
+        <where>  
+
+        </where>
+    </select>
+
+    <select id="queryList" resultMap="V2DnsResult">
+        <include refid="selectV2NodeVo"/>
+        <where>
+
+        </where>
+    </select>
+</mapper>

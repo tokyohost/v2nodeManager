@@ -11,6 +11,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="user"    column="user"    />
         <result property="passwd"    column="passwd"    />
         <result property="nodeId"    column="node_id"    />
+        <result property="nodeType"    column="node_type"    />
         <result property="filePath"    column="file_path"    />
         <result property="remark"    column="remark"    />
     </resultMap>
@@ -31,7 +32,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectV2ServerVo">
-        select id, ip, port, user, passwd, node_id, file_path,remark from v2_server
+        select id, ip, port, user, passwd, node_id, file_path,remark,node_type from v2_server
     </sql>
 
     <select id="selectV2ServerList" parameterType="V2Server" resultMap="V2ServerResult">
@@ -60,6 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="passwd != null">passwd,</if>
             <if test="nodeId != null">node_id,</if>
             <if test="filePath != null">file_path,</if>
+            <if test="nodeType != null">node_type,</if>
             <if test="remark != null">remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -69,6 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="passwd != null">#{passwd},</if>
             <if test="nodeId != null">#{nodeId},</if>
             <if test="filePath != null">#{filePath},</if>
+            <if test="nodeType != null">#{nodeType},</if>
             <if test="remark != null">#{remark},</if>
          </trim>
     </insert>

@@ -6,20 +6,19 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.ShellUtil;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.NodeVo;
 import com.ruoyi.system.domain.V2Dns;
 import com.ruoyi.system.domain.V2Node;
 import com.ruoyi.system.domain.V2Server;
 import com.ruoyi.system.mapper.V2ServerMapper;
-import com.ruoyi.system.service.ConfigService;
-import com.ruoyi.system.service.ISysConfigService;
-import com.ruoyi.system.service.IV2DnsService;
-import com.ruoyi.system.service.IV2ServerService;
+import com.ruoyi.system.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 【请填写功能名称】Service业务层处理
@@ -31,6 +30,9 @@ import java.util.List;
 public class V2ServerServiceImpl implements IV2ServerService {
     @Autowired
     private V2ServerMapper v2ServerMapper;
+
+    @Autowired
+    private V2Manager manager;
 
     @Autowired
     private ShellUtil shellUtil;
@@ -250,5 +252,19 @@ public class V2ServerServiceImpl implements IV2ServerService {
         } finally {
             shellone.close();
         }
+    }
+
+    @Override
+    public AjaxResult queryNodeList(V2Server v2Server) {
+        if (StringUtils.isEmpty(v2Server.getNodeType())) {
+            return AjaxResult.success(new ArrayList<>());
+        }
+        V2NodeService v2NodeService = manager.getV2NodeService(v2Server.getNodeType());
+        if (Objects.isNull(v2NodeService)) {
+            return AjaxResult.error("不支持的节点类型");
+        }
+        List<NodeVo> nodeVos = v2NodeService.queryList(new NodeVo());
+
+        return AjaxResult.success(nodeVos);
     }
 }
