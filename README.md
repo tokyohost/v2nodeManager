@@ -182,7 +182,6 @@ redis 7.0
         <td>DNS管理</td>
         <td>✔</td>
     </tr>
-	
     <tr>
         <td>一键安装XrayR后端</td>
         <td>✔</td>
