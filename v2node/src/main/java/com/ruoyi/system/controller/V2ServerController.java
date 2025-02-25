@@ -27,7 +27,7 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * 【请填写功能名称】Controller
+ * 服务器Controller
  * 
  * @author ruoyi
  * @date 2024-05-10
@@ -40,7 +40,7 @@ public class V2ServerController extends BaseController
     private IV2ServerService v2ServerService;
 
     /**
-     * 查询【请填写功能名称】列表
+     * 查询服务器列表
      */
     @PreAuthorize("@ss.hasPermi('system:server:list')")
     @GetMapping("/list")
@@ -59,7 +59,7 @@ public class V2ServerController extends BaseController
         }
         return getDataTable(list);
     }    /**
-     * 查询【请填写功能名称】列表
+     * 查询服务器列表
      */
     @PreAuthorize("@ss.hasPermi('system:server:list')")
     @GetMapping("/listAll")
@@ -71,20 +71,20 @@ public class V2ServerController extends BaseController
     }
 
     /**
-     * 导出【请填写功能名称】列表
+     * 导出服务器列表
      */
     @PreAuthorize("@ss.hasPermi('system:server:export')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.EXPORT)
+    @Log(title = "服务器", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(HttpServletResponse response, V2Server v2Server)
     {
         List<V2Server> list = v2ServerService.selectV2ServerList(v2Server);
         ExcelUtil<V2Server> util = new ExcelUtil<V2Server>(V2Server.class);
-        util.exportExcel(response, list, "【请填写功能名称】数据");
+        util.exportExcel(response, list, "服务器数据");
     }
 
     /**
-     * 获取【请填写功能名称】详细信息
+     * 获取服务器详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:server:query')")
     @GetMapping(value = "/{id}")
@@ -93,7 +93,7 @@ public class V2ServerController extends BaseController
     }
 
      /**
-     * 获取【请填写功能名称】详细信息
+     * 获取服务器详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:server:query')")
     @GetMapping(value = "/checkInstallStatus/{id}")
@@ -102,7 +102,7 @@ public class V2ServerController extends BaseController
         return v2ServerService.checkInstallStatus(id);
     }
      /**
-     * 获取【请填写功能名称】详细信息
+     * 获取服务器详细信息
      */
     @PreAuthorize("@ss.hasPermi('system:server:query')")
     @GetMapping(value = "/installStatus/{id}")
@@ -133,16 +133,16 @@ public class V2ServerController extends BaseController
     }
 
     /**
-     * 新增【请填写功能名称】
+     * 新增服务器
      */
     @PreAuthorize("@ss.hasPermi('system:server:add')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.INSERT)
+    @Log(title = "服务器", businessType = BusinessType.INSERT)
     @PostMapping
     public AjaxResult add(@RequestBody V2Server v2Server)
     {
         return toAjax(v2ServerService.insertV2Server(v2Server));
     }    /**
-     * 新增【请填写功能名称】
+     * 新增服务器
      */
     @PreAuthorize("@ss.hasPermi('system:server:queryV2NodeList')")
     @GetMapping(value = "/queryV2NodeList")
@@ -153,10 +153,10 @@ public class V2ServerController extends BaseController
     }
 
     /**
-     * 修改【请填写功能名称】
+     * 修改服务器
      */
     @PreAuthorize("@ss.hasPermi('system:server:edit')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.UPDATE)
+    @Log(title = "服务器", businessType = BusinessType.UPDATE)
     @PutMapping
     public AjaxResult edit(@RequestBody V2Server v2Server)
     {
@@ -164,10 +164,10 @@ public class V2ServerController extends BaseController
     }
 
     /**
-     * 删除【请填写功能名称】
+     * 删除服务器
      */
     @PreAuthorize("@ss.hasPermi('system:server:remove')")
-    @Log(title = "【请填写功能名称】", businessType = BusinessType.DELETE)
+    @Log(title = "服务器", businessType = BusinessType.DELETE)
 	@DeleteMapping("/{ids}")
     public AjaxResult remove(@PathVariable Long[] ids)
     {

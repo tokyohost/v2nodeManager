@@ -32,7 +32,8 @@
           size="mini"
           @click="handleAdd"
           v-hasPermi="['system:server:add']"
-        >新增</el-button>
+        >新增
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -43,7 +44,8 @@
           :disabled="single"
           @click="handleUpdate"
           v-hasPermi="['system:server:edit']"
-        >修改</el-button>
+        >修改
+        </el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -54,22 +56,23 @@
           :disabled="multiple"
           @click="handleDelete"
           v-hasPermi="['system:server:remove']"
-        >删除</el-button>
+        >删除
+        </el-button>
       </el-col>
       <right-toolbar :showSearch.sync="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
     <el-table v-loading="loading" :data="serverList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="id" align="center" prop="id" />-->
-      <el-table-column label="ip" align="center" prop="ip" />
-      <el-table-column label="端口" align="center" prop="port" />
-      <el-table-column label="用户名" align="center" prop="user" />
-<!--      <el-table-column label="passwd" align="center" prop="passwd" />-->
-      <el-table-column label="节点名称" align="center" prop="nodeName" />
-      <el-table-column label="节点ID" align="center" prop="nodeId" />
-      <el-table-column label="解析地址" align="center" prop="nodeHost" />
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column type="selection" width="55" align="center"/>
+      <!--      <el-table-column label="id" align="center" prop="id" />-->
+      <el-table-column label="ip" align="center" prop="ip"/>
+      <el-table-column label="端口" align="center" prop="port"/>
+      <el-table-column label="用户名" align="center" prop="user"/>
+      <!--      <el-table-column label="passwd" align="center" prop="passwd" />-->
+      <el-table-column label="节点名称" align="center" prop="nodeName"/>
+      <el-table-column label="节点ID" align="center" prop="nodeId"/>
+      <el-table-column label="解析地址" align="center" prop="nodeHost"/>
+      <el-table-column label="备注" align="center" prop="remark"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -78,20 +81,23 @@
             icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
             v-hasPermi="['system:server:edit']"
-          >修改</el-button>
+          >修改
+          </el-button>
           <el-button
             size="mini"
             type="text"
             icon="el-icon-delete"
             @click="handleDelete(scope.row)"
             v-hasPermi="['system:server:remove']"
-          >删除</el-button>
-          <el-button
-            size="mini"
-            type="text"
-            @click="checkInstallStatus(scope.row)"
-            v-hasPermi="['system:server:check']"
-          >检查XrayR安装状态</el-button>
+          >删除
+          </el-button>
+          <span v-if="scope.row.nodeType === 'vmess'">
+            <el-button
+              size="mini"
+              type="text"
+              @click="checkInstallStatus(scope.row)"
+              v-hasPermi="['system:server:check']"
+            >检查XrayR安装状态</el-button>
           <el-button
             size="mini"
             type="text"
@@ -104,18 +110,41 @@
             @click="updateVersion(scope.row)"
             v-hasPermi="['system:server:check']"
           >切换XrayR版本</el-button>
+          </span>
+          <span v-else-if="scope.row.nodeType === 'soga'">
+            <el-button
+              size="mini"
+              type="text"
+              @click="checkInstallStatus(scope.row)"
+              v-hasPermi="['system:server:check']"
+            >检查Soga安装状态</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="installStatus(scope.row)"
+            v-hasPermi="['system:server:check']"
+          >安装Soga</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="updateVersion(scope.row)"
+            v-hasPermi="['system:server:check']"
+          >切换Soga版本</el-button>
+          </span>
+
           <el-button
             size="mini"
             type="text"
             @click="replaceHostPanel(scope.row)"
             v-hasPermi="['system:server:replaceHost']"
-          >一键更换域名</el-button>
-<!--          <el-button-->
-<!--            size="mini"-->
-<!--            type="text"-->
-<!--            @click="installStatus(scope.row)"-->
-<!--            v-hasPermi="['system:server:edit']"-->
-<!--          >安装XrayR</el-button>-->
+          >一键更换域名
+          </el-button>
+          <!--          <el-button-->
+          <!--            size="mini"-->
+          <!--            type="text"-->
+          <!--            @click="installStatus(scope.row)"-->
+          <!--            v-hasPermi="['system:server:edit']"-->
+          <!--          >安装XrayR</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -132,43 +161,43 @@
     <el-dialog :title="title" :visible.sync="open" width="50%" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="ip" prop="ip">
-          <el-input v-model="form.ip" placeholder="请输入ip" />
+          <el-input v-model="form.ip" placeholder="请输入ip"/>
         </el-form-item>
         <el-form-item label="port" prop="port">
-          <el-input v-model="form.port" placeholder="请输入SSH port" />
+          <el-input v-model="form.port" placeholder="请输入SSH port"/>
         </el-form-item>
         <el-form-item label="用户名" prop="user">
-          <el-input v-model="form.user" placeholder="请输入user" />
+          <el-input v-model="form.user" placeholder="请输入user"/>
         </el-form-item>
         <el-form-item label="密码" prop="passwd">
-          <el-input v-model="form.passwd" placeholder="请输入passwd" show-password />
+          <el-input v-model="form.passwd" placeholder="请输入passwd" show-password/>
         </el-form-item>
         <el-form-item label="节点类型" prop="nodeType">
-        <el-select v-model="form.nodeType" placeholder="请选择" @change="nodeTypeChange" clearable>
-          <el-option
-            v-for="item in nodeTypeOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value" >
-          </el-option>
-        </el-select>
+          <el-select v-model="form.nodeType" placeholder="请选择" @change="nodeTypeChange" clearable>
+            <el-option
+              v-for="item in nodeTypeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="绑定节点" prop="nodeId">
-<!--          <el-input v-model="form.nodeId" placeholder="请输入nodeId" />-->
+          <!--          <el-input v-model="form.nodeId" placeholder="请输入nodeId" />-->
           <el-select v-model="form.nodeId" placeholder="请选择绑定节点" clearable>
             <el-option
               v-for="item in nodeList"
               :key="item.nodeId"
               :label="item.name"
-              :value="item.nodeId" >
+              :value="item.nodeId">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="XrayR 配置文件路径" prop="filePath">
-          <el-input v-model="form.filePath" placeholder="/etc/XrayR/config.yml" />
+          <el-input v-model="form.filePath" placeholder="/etc/XrayR/config.yml"/>
         </el-form-item>
         <el-form-item label="remark" prop="remark">
-          <el-input v-model="form.remark" type="textarea" placeholder="备注" />
+          <el-input v-model="form.remark" type="textarea" placeholder="备注"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -181,7 +210,7 @@
     <el-dialog :title="'一键更换域名'" :visible.sync="showReplaceHost" v-loading="loading" width="50%" append-to-body>
       <el-form ref="form" :model="formQuickHost" :rules="hostRules" label-width="80px">
         <el-form-item label="ip" prop="ip">
-          <el-input v-model="form.ip" placeholder="请输入ip"  disabled/>
+          <el-input v-model="form.ip" placeholder="请输入ip" disabled/>
         </el-form-item>
         <el-form-item label="主域名" prop="zoneId">
           <el-select v-model="formQuickHost.zoneName" placeholder="请选择" filterable>
@@ -196,7 +225,7 @@
         <el-form-item label="DNS名称" prop="name">
           <el-input v-model="formQuickHost.name" placeholder="请输入DNS名称">
             <el-button slot="prepend" icon="el-icon-refresh-left" @click="getadnsName">随机生成</el-button>
-            <template slot="append">.{{formQuickHost.zoneName}}</template>
+            <template slot="append">.{{ formQuickHost.zoneName }}</template>
           </el-input>
         </el-form-item>
         <el-form-item label="是否代理" prop="proxied">
@@ -231,18 +260,21 @@
 
 <script>
 import {
-  listServer,
-  getServer,
-  delServer,
   addServer,
-  updateServer,
   checkInstallStatus,
-  installStatus, quickHostReplace, updateVersion, getNodeList
+  delServer,
+  getNodeList,
+  getServer,
+  installStatus,
+  listServer,
+  quickHostReplace,
+  updateServer,
+  updateVersion
 } from '@/api/system/server'
-import { Loading } from 'element-ui'
-import { listDomainAll } from '@/api/system/domain'
-import { getADnsName } from '@/api/system/dns'
-import { listAllTemplate } from '@/api/system/template'
+import {Loading} from 'element-ui'
+import {listDomainAll} from '@/api/system/domain'
+import {getADnsName} from '@/api/system/dns'
+import {listAllTemplate} from '@/api/system/template'
 
 export default {
   name: "Server",
@@ -252,6 +284,7 @@ export default {
       loading: true,
       // 选中数组
       ids: [],
+      ips: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -264,11 +297,11 @@ export default {
       serverList: [],
       domainOptions: [],
       templateOptions: [],
-      proxyOptions:[{
-        label:"代理",
+      proxyOptions: [{
+        label: "代理",
         value: 'true'
-      },{
-        label:"不代理",
+      }, {
+        label: "不代理",
         value: 'false'
       },],
       // 弹出层标题
@@ -288,53 +321,58 @@ export default {
       },
       // 表单参数
       form: {
-        filePath:"/etc/XrayR/config.yml"
+        filePath: "/etc/XrayR/config.yml",
+        nodeType:null
       },
       nodeTypeOptions: [
         {
           value: 'vmess',
           label: 'vmess'
         },
+        {
+          value: 'soga',
+          label: 'soga'
+        },
       ],
       nodeList: [],
       formQuickHost: {
         zoneName: '',
         name: '',
-        zoneId:''
+        zoneId: ''
       },
       // 表单校验
       rules: {
         ip: [
-          { required: true, message: '请输入IP', trigger: 'blur' },
+          {required: true, message: '请输入IP', trigger: 'blur'},
         ],
         port: [
-          { required: true, message: '请输入SSH端口', trigger: 'blur' },
+          {required: true, message: '请输入SSH端口', trigger: 'blur'},
         ],
         user: [
-          { required: true, message: '请输入用户名', trigger: 'blur' },
+          {required: true, message: '请输入用户名', trigger: 'blur'},
         ],
         nodeType: [
-          { required: true, message: '请选择节点类型', trigger: 'blur' },
+          {required: true, message: '请选择节点类型', trigger: 'blur'},
         ],
         passwd: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          {required: true, message: '请输入密码', trigger: 'blur'},
         ],
         nodeId: [
-          { required: true, message: '请输入面板节点ID', trigger: 'blur' },
+          {required: true, message: '请输入面板节点ID', trigger: 'blur'},
         ],
         filePath: [
-          { required: true, message: '请输入配置文件路径', trigger: 'blur' },
+          {required: true, message: '请输入配置文件路径', trigger: 'blur'},
         ],
       },
-      hostRules:{
+      hostRules: {
         zoneId: [
-          { required: true, message: '请选择主域名', trigger: 'blur' },
+          {required: true, message: '请选择主域名', trigger: 'blur'},
         ],
         name: [
-          { required: true, message: '请配置DNS域名', trigger: 'blur' },
+          {required: true, message: '请配置DNS域名', trigger: 'blur'},
         ],
         templateId: [
-          { required: true, message: '请选择配置文件模板', trigger: 'blur' },
+          {required: true, message: '请选择配置文件模板', trigger: 'blur'},
         ],
       }
     };
@@ -354,17 +392,25 @@ export default {
         this.loading = false;
       });
     },
-    nodeTypeChange(value) {
+    async nodeTypeChange(value) {
       console.log(value)
-      let loadingInstance = Loading.service({ fullscreen: true });
-      getNodeList(value).then((res)=>{
+      let loadingInstance = Loading.service({fullscreen: true});
+      await getNodeList(value).then((res) => {
         console.log(res)
         this.nodeList = res.data
+        this.form.filePath = this.changeFileConfigPath(value)
         loadingInstance.close();
-      }).catch((e)=>{
+      }).catch((e) => {
         this.$message.error("查询失败")
         loadingInstance.close();
       })
+    },
+    changeFileConfigPath(agreementType) {
+      if (agreementType === "vmess") {
+        return "/etc/XrayR/config.yml";
+      } else if (agreementType === "soga") {
+        return "/etc/soga/soga.conf"
+      }
     },
     cancelQuick() {
       this.form = {}
@@ -374,17 +420,17 @@ export default {
     domainChange(domain) {
       console.log(domain)
       this.formQuickHost.zoneName = domain.name
-      this.formQuickHost.zoneId=domain.domainId
+      this.formQuickHost.zoneId = domain.domainId
       this.$forceUpdate()
     },
-    getTemplateListAll() {
-      listAllTemplate({}).then(response=>{
-        this.templateOptions= response.data
+    getTemplateListAll(query) {
+      listAllTemplate({...query}).then(response => {
+        this.templateOptions = response.data
 
       })
     },
     getadnsName() {
-      getADnsName().then(response =>{
+      getADnsName().then(response => {
         console.log(response)
         this.formQuickHost.name = response.msg
         this.$forceUpdate()
@@ -429,7 +475,8 @@ export default {
     // 多选框选中数据
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.id)
-      this.single = selection.length!==1
+      this.ips = selection.map(item => item.ip)
+      this.single = selection.length !== 1
       this.multiple = !selection.length
     },
     /** 新增按钮操作 */
@@ -444,16 +491,19 @@ export default {
       this.formQuickHost.ip = row.ip
       this.formQuickHost.serverId = row.id
       this.formQuickHost.proxied = "true"
+      // this.form.nodeType = row.nodeType
+      this.getTemplateListAll({fileType:row.nodeType})
     },
     /** 修改按钮操作 */
-    handleUpdate(row) {
+    async handleUpdate(row) {
       this.reset();
       const id = row.id || this.ids
-      getServer(id).then(response => {
+      await getServer(id).then(response => {
         this.form = response.data;
         this.open = true;
         this.title = "修改";
       });
+      await this.nodeTypeChange(this.form.nodeType);
     },
     /** 提交按钮 */
     submitForm() {
@@ -479,14 +529,14 @@ export default {
       this.$refs["form"].validate(valid => {
         if (valid) {
           this.loading = true
-          quickHostReplace(this.formQuickHost).then(response=>{
+          quickHostReplace(this.formQuickHost).then(response => {
             console.log(response)
             this.loading = false
             if (response.code == 200) {
               this.$message.success("更换成功")
               this.getList()
             }
-          }).catch((e)=>{
+          }).catch((e) => {
             this.loading = false
           })
         }
@@ -494,18 +544,21 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
+      console.log(row)
       const ids = row.id || this.ids;
-      this.$modal.confirm('是否确认删除【请填写功能名称】编号为"' + ids + '"的数据项？').then(function() {
+      const ips = row.ip || this.ips;
+      this.$modal.confirm('是否确认删除IP为"' + ips + '"的数据项？').then(function () {
         return delServer(ids);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
-      }).catch(() => {});
+      }).catch(() => {
+      });
     },
     checkInstallStatus(row) {
       const ids = row.id
-      let loadingInstance = Loading.service({ fullscreen: true ,text:"正在检查中..."});
-      checkInstallStatus(ids).then(response=>{
+      let loadingInstance = Loading.service({fullscreen: true, text: "正在检查中..."});
+      checkInstallStatus(ids).then(response => {
         console.log(response)
         loadingInstance.close()
         this.$message({
@@ -520,14 +573,14 @@ export default {
         }).then(() => {
         }).catch(() => {
         });
-      }).catch((e)=>{
+      }).catch((e) => {
         loadingInstance.close()
       })
     },
     installStatus(row) {
       const ids = row.id
-      let loadingInstance = Loading.service({ fullscreen: true ,text:"正在安装中..."});
-      installStatus(ids).then(response=>{
+      let loadingInstance = Loading.service({fullscreen: true, text: "正在安装中..."});
+      installStatus(ids).then(response => {
         console.log(response)
         loadingInstance.close()
         this.$message({
@@ -535,7 +588,7 @@ export default {
           message: response.msg
         });
 
-      }).catch((e)=>{
+      }).catch((e) => {
         loadingInstance.close()
       })
     },
@@ -546,9 +599,9 @@ export default {
         cancelButtonText: '取消',
         inputPattern: /\w+/,
         inputErrorMessage: '版本号不能为空'
-      }).then(({ value }) => {
-        let loadingInstance = Loading.service({ fullscreen: true ,text:"正在处理中..."});
-        updateVersion(ids,value).then(response=>{
+      }).then(({value}) => {
+        let loadingInstance = Loading.service({fullscreen: true, text: "正在处理中..."});
+        updateVersion(ids, value).then(response => {
           console.log(response)
           loadingInstance.close()
           this.$message({
@@ -556,7 +609,7 @@ export default {
             message: response.msg
           });
 
-        }).catch((e)=>{
+        }).catch((e) => {
           loadingInstance.close()
         })
 

@@ -89,6 +89,8 @@ public class V2DnsController extends BaseController
     {
         return v2DnsService.syncV2Dns(null);
     }
+
+
     @PreAuthorize("@ss.hasPermi('system:dns:generateConfig')")
     @GetMapping(value = "/generateConfig")
     public AjaxResult generateConfig(String id,Long templateId)

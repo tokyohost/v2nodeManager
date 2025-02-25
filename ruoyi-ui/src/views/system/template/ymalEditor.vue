@@ -85,7 +85,10 @@ export default {
  .el-form-item--medium >>> .el-form-item__content{
   line-height: 20px !important;
    .CodeMirror .cm-s-cobalt .CodeMirror-wrap{
-     height: 100%;
+     height: 100% !important;
    }
 }
+ >>> .CodeMirror{
+   height: 100% !important;
+ }
 </style>

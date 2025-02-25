@@ -8,7 +8,8 @@ package com.ruoyi.system.constant;
  */
 
 public enum NodeTypeEnum {
-    VMESS("vmess");
+    VMESS("vmess"),
+    SOGA("soga");
 
     String type;
 

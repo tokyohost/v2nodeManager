@@ -61,7 +61,7 @@ public class ConfigServiceImpl implements ConfigService {
 
 
         V2FileTemplate v2FileTemplate = fileTemplateService.selectV2FileTemplateById(templateId);
-//替换字符串中的占位符
+        //替换字符串中的占位符
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("cfToken", cfToken);
         params.put("cfEmail", cfEmail);

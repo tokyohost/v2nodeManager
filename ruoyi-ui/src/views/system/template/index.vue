@@ -1,8 +1,18 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" :inline="true" v-show="showSearch" label-width="68px">
+      <el-form-item label="文件类型" prop="nodeType">
+        <el-select v-model="queryParams.fileType" placeholder="请选择" clearable>
+          <el-option
+            v-for="item in nodeTypeOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item>
-<!--        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>-->
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
 <!--        <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>-->
       </el-form-item>
     </el-form>
@@ -58,6 +68,7 @@
       <el-table-column label="id" align="center" prop="id" />
 <!--      <el-table-column label="模板" align="center" prop="content" />-->
       <el-table-column label="名称" align="center" prop="fileName" />
+      <el-table-column label="类型" align="center" prop="fileType" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -92,9 +103,19 @@
         <el-form-item label="名称" prop="fileName">
           <el-input v-model="form.fileName" placeholder="请输入名称" />
         </el-form-item>
+        <el-form-item label="文件类型" prop="nodeType">
+          <el-select v-model="form.fileType" placeholder="请选择" @change="fileTypeChange" clearable>
+            <el-option
+              v-for="item in nodeTypeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="模板">
 <!--          <editor v-model="form.content" :min-height="192"/>-->
-          <yaml-editor v-model="form.content" style="width: 100%;height: 450px;"/>
+          <yaml-editor v-model="form.content" style="width: 100%;min-height: 450px"/>
         </el-form-item>
 
       </el-form>
@@ -115,6 +136,8 @@
 <script>
 import { listTemplate, getTemplate, delTemplate, addTemplate, updateTemplate } from "@/api/system/template";
 import YamlEditor from '@/views/system/template/ymalEditor.vue'
+import {Loading} from "element-ui";
+import {getNodeList} from "@/api/system/server";
 
 export default {
   name: "Template",
@@ -145,6 +168,16 @@ export default {
         pageSize: 10,
         content: null,
       },
+      nodeTypeOptions: [
+        {
+          value: 'vmess',
+          label: 'vmess'
+        },
+        {
+          value: 'soga',
+          label: 'soga'
+        },
+      ],
       // 表单参数
       form: {},
       // 表单校验
@@ -159,6 +192,10 @@ export default {
     this.getList();
   },
   methods: {
+    async fileTypeChange(value) {
+      console.log(value)
+      this.getList()
+    },
     /** 查询文件模板列表 */
     getList() {
       this.loading = true;

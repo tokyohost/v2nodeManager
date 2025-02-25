@@ -24,6 +24,16 @@ public class V2FileTemplate extends BaseEntity
 
     private String fileName;
 
+    private String fileType;
+
+    public String getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+
     public String getFileName() {
         return fileName;
     }

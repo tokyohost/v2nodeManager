@@ -41,6 +41,10 @@ public class ShellUtil {
 
     private ChannelShell channelShell;
 
+    public Session getSession() {
+        return session;
+    }
+
     /**
      * 初始化
      *
@@ -59,6 +63,7 @@ public class ShellUtil {
         session.setConfig(sshConfig);
         session.connect(timeout);
         log.info("Session connected!");
+
     }
 
     public ShellUtil getOne() {
@@ -320,6 +325,7 @@ public class ShellUtil {
             session.disconnect();
             session = null;
         }
+        log.info("shell Exit");
     }
 
     private void initChannelSftp() throws Exception {

@@ -944,3 +944,12 @@ INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_valu
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (106, 'XrayRUpdateVersion', 'XrayRUpdateVersion', 'nohup XrayR update {version}  &', 'Y', 'admin', '2024-06-12 10:19:57', 'admin', '2024-06-12 10:38:48', NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+ALTER TABLE `v2_server`
+    ADD COLUMN `node_type` varchar(255) NULL COMMENT '节点类型' AFTER `remark`;
+
+update v2_server set node_type = 'vmess' where 1=1;
+
+ALTER table v2_file_template
+    ADD COLUMN `file_type` varchar(32) DEFAULT NULL COMMENT '配置文件类型' AFTER `file_name`;
+update v2_file_template set file_type = 'vmess' where 1=1;

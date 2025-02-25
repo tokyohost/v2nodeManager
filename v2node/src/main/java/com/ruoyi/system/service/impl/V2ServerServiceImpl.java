@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.ShellUtil;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.agreementStrategy.V2NodeService;
 import com.ruoyi.system.domain.NodeVo;
 import com.ruoyi.system.domain.V2Dns;
 import com.ruoyi.system.domain.V2Node;
@@ -31,6 +32,8 @@ public class V2ServerServiceImpl implements IV2ServerService {
     @Autowired
     private V2ServerMapper v2ServerMapper;
 
+    @Autowired
+    private V2Manager v2Manager;
     @Autowired
     private V2Manager manager;
 
@@ -117,69 +120,27 @@ public class V2ServerServiceImpl implements IV2ServerService {
     @Override
     public AjaxResult checkInstallStatus(Long id) {
         V2Server v2Server = v2ServerMapper.selectV2ServerById(id);
-        ShellUtil shellone = shellUtil.getOne();
-        String xrayRCheckVersion = sysConfigService.selectConfigByKey("XrayRCheckVersion");
-        try {
-
-            shellone.init(v2Server.getIp(), Integer.valueOf(v2Server.getPort()), v2Server.getUser(), v2Server.getPasswd());
-            String execCmd = shellone.execCmd("systemctl status XrayR");
-            if (execCmd.contains("Loaded: loaded")) {
-                if (!StringUtils.isEmpty(xrayRCheckVersion)) {
-                    String s = shellone.execCmdAndClose(xrayRCheckVersion);
-                    return AjaxResult.success("服务已安装["+s+"]");
-                }else{
-                    return AjaxResult.success("服务已安装");
-                }
-            } else {
-                return AjaxResult.error("服务未安装");
-            }
-        } catch (JSchException e) {
-            return AjaxResult.error(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }finally {
-            shellone.close();
+        String nodeType = v2Server.getNodeType();
+        V2NodeService v2NodeService = v2Manager.getV2NodeService(nodeType);
+        if (Objects.isNull(v2NodeService)) {
+            return AjaxResult.error("不支持的类型 "+nodeType);
         }
+
+        return v2NodeService.checkInstallStatus(v2Server);
     }
 
     @Override
     public AjaxResult installStatus(Long id) {
 
         V2Server v2Server = v2ServerMapper.selectV2ServerById(id);
-//        if ((shellMap.contains(v2Server.getIp()))) {
-//
-//        }
-        ShellUtil shellone = shellUtil.getOne();
-        String xrayRScript = sysConfigService.selectConfigByKey("XrayRScript");
-//        return null;
-
-        try {
-            shellone.init(v2Server.getIp(), Integer.valueOf(v2Server.getPort()), v2Server.getUser(), v2Server.getPasswd());
-
-            ArrayList<String> commands = new ArrayList<>();
-//            commands.add("mkdir /etc/XrayR/");
-//            commands.add("touch /etc/XrayR/install.log");
-
-
-            //如果指定了版本，则执行版本切换
-//                if (StringUtils.isNotEmpty(xrayRVersion)) {
-//                    commands.add(xrayRVersion);
-//                }else{
-//                }
-//            String s = shellone.execCmdByShell(commands);
-//                if(execCmd1.contains("success")) {
-//                    return AjaxResult.success("安装成功");
-//                } else {
-            shellone.execCmdAndClose("nohup " + xrayRScript + " & ");
-            return AjaxResult.success("下发安装命令完成,请稍后检查安装状态");
-//                }
-        } catch (JSchException e) {
-            return AjaxResult.error(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            shellone.close();
+        String nodeType = v2Server.getNodeType();
+        V2NodeService v2NodeService = v2Manager.getV2NodeService(nodeType);
+        if (Objects.isNull(v2NodeService)) {
+            return AjaxResult.error("不支持的类型 "+nodeType);
         }
+
+        return v2NodeService.install(v2Server);
+
     }
 
     @Override
@@ -225,8 +186,12 @@ public class V2ServerServiceImpl implements IV2ServerService {
         AjaxResult v2Dns = iv2DnsService.createV2Dns(data);
         if (v2Dns.isSuccess()) {
             V2Dns dnsByName = iv2DnsService.selectV2DnsByName(data.getName());
-            AjaxResult replaced = configService.replaceConfig(dnsByName.getId(), data.getTemplateId());
-            return replaced;
+            String nodeType = v2Server.getNodeType();
+            V2NodeService v2NodeService = v2Manager.getV2NodeService(nodeType);
+            if (Objects.isNull(v2NodeService)) {
+                return AjaxResult.error("不支持的类型 "+nodeType);
+            }
+            return v2NodeService.replaceConfig(dnsByName.getId(), data.getTemplateId());
         } else {
             return v2Dns;
         }
@@ -239,19 +204,13 @@ public class V2ServerServiceImpl implements IV2ServerService {
         }
 
         V2Server v2Server = v2ServerMapper.selectV2ServerById(id);
-        ShellUtil shellone = shellUtil.getOne();
-        String xrayRVersion = sysConfigService.selectConfigByKey("XrayRUpdateVersion");
-        try {
-            shellone.init(v2Server.getIp(), Integer.valueOf(v2Server.getPort()), v2Server.getUser(), v2Server.getPasswd());
-            String execCmd = shellone.execCmdAndClose(xrayRVersion.replace("{version}",version));
-            return AjaxResult.success("下发命令完成,请稍后检查安装状态");
-        } catch (JSchException e) {
-            return AjaxResult.error(e.getMessage());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        } finally {
-            shellone.close();
+        String nodeType = v2Server.getNodeType();
+        V2NodeService v2NodeService = v2Manager.getV2NodeService(nodeType);
+        if (Objects.isNull(v2NodeService)) {
+            return AjaxResult.error("不支持的类型 "+nodeType);
         }
+
+        return v2NodeService.update(v2Server,version);
     }
 
     @Override

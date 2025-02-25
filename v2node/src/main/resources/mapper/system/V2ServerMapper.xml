@@ -84,6 +84,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="user != null">user = #{user},</if>
             <if test="passwd != null">passwd = #{passwd},</if>
             <if test="nodeId != null">node_id = #{nodeId},</if>
+            <if test="nodeType != null">node_type = #{nodeType},</if>
             <if test="filePath != null">file_path = #{filePath},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>

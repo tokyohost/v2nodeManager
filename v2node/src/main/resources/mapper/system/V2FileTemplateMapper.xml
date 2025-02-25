@@ -9,16 +9,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="content"    column="content"    />
         <result property="remark"    column="remark"    />
         <result property="fileName"    column="file_name"    />
+        <result property="fileType"    column="file_type"    />
     </resultMap>
 
     <sql id="selectV2FileTemplateVo">
-        select id, content, remark ,file_name from v2_file_template
+        select id, content, remark ,file_name,file_type from v2_file_template
     </sql>
 
     <select id="selectV2FileTemplateList" parameterType="V2FileTemplate" resultMap="V2FileTemplateResult">
         <include refid="selectV2FileTemplateVo"/>
         <where>  
             <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="fileType != null and fileType != ''"> and file_type = #{fileType}</if>
         </where>
     </select>
     
@@ -33,11 +35,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">content,</if>
             <if test="remark != null">remark,</if>
             <if test="fileName != null">file_name,</if>
+            <if test="fileType != null != null">file_type,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="content != null">#{content},</if>
             <if test="remark != null">#{remark},</if>
             <if test="fileName != null">#{fileName},</if>
+            <if test="fileType != null">#{fileType},</if>
          </trim>
     </insert>
 
@@ -47,6 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null">content = #{content},</if>
             <if test="remark != null">remark = #{remark},</if>
             <if test="fileName != null">file_name = #{fileName},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
         </trim>
         where id = #{id}
     </update>
