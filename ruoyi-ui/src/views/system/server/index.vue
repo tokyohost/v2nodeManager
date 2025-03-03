@@ -193,7 +193,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="XrayR 配置文件路径" prop="filePath">
+        <el-form-item label="配置文件路径" prop="filePath">
           <el-input v-model="form.filePath" placeholder="/etc/XrayR/config.yml"/>
         </el-form-item>
         <el-form-item label="remark" prop="remark">
