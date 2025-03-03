@@ -66,11 +66,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="ttl != null">#{ttl},</if>
             <if test="remark != null">#{remark},</if>
          </trim>
+        ON DUPLICATE KEY UPDATE  name = VALUES(name),content = VALUES(content);
     </insert>
 
     <update id="updateV2Dns" parameterType="V2Dns">
         update v2_dns
-        <trim prefix="SET" suffixOverrides=",">=
+        <trim prefix="SET" suffixOverrides=",">
             <if test="zoneId != null">zone_id = #{zoneId},</if>
             <if test="zoneName != null">zone_name = #{zoneName},</if>
             <if test="name != null">`name` = #{name},</if>
