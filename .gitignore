@@ -3,6 +3,7 @@
 
 .gradle
 /build/
+/test/java/AllTest.java
 !gradle/wrapper/gradle-wrapper.jar
 
 target/

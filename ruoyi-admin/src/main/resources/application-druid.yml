@@ -6,9 +6,9 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:mysql://localhost:3307/v2node?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                username: root
-                password: 123456
+                url: jdbc:mysql://${V2NODE_MYSQL_HOST:localhost}:${V2NODE_MYSQL_PORT:3306}/${V2NODE_MYSQL_DBNAME:v2node}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: ${V2NODE_MYSQL_USERNAME:root}
+                password: ${V2NODE_MYSQL_PASSWORD:123456}
             # 从库数据源
             slave:
                 # 从数据源开关/默认关闭
@@ -19,9 +19,9 @@ spring:
             v2board:
                 # v2board 数据库
                 enabled: true
-                url: jdbc:mysql://localhost:3306/v2vpn24?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
-                username: root
-                password: yourPassword
+                url: jdbc:mysql://${V2BOARD_MYSQL_HOST:localhost}:${V2BOARD_MYSQL_PORT:3306}/${V2BOARD_MYSQL_DBNAME:v2vpn24}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+                username: ${V2BOARD_MYSQL_USERNAME:root}
+                password: ${V2BOARD_MYSQL_PASSWORD:123456}
             # 初始连接数
             initialSize: 5
             # 最小连接池数量
