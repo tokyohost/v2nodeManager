@@ -1,0 +1,68 @@
+version: "3.8"
+services:
+  # mysql服务
+  mysql:
+    image: mrliling/v2nodem-mysql:latest
+#    build: docker-mysql/
+    volumes:
+      - ./mysql:/var/lib/mysql
+    restart: always
+    container_name: v2node-mysql
+    ports:
+      - 3366:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=fe7cb75d
+      - MYSQL_DATABASE=v2node
+      - MYSQL_USER=v2nodemanager
+      - MYSQL_PASSWORD=7df7ffee
+  # redis服务
+  redis:
+    image: library/redis:alpine
+    container_name: v2node-redis
+    ports:
+      - 6399:6379
+    # 给redis设置密码
+    command: redis-server --requirepass aefc7fe --appendonly yes
+    volumes:
+      - ./redis/data:/data
+  nginx:
+    image: mrliling/v2nodem-web
+#    build: ruoyi-ui
+    container_name: v2node-web
+    ports:
+      - 8099:80
+    depends_on:
+      - v2node-app
+  # 构建若依后端
+  v2node-app:
+    image: mrliling/v2nodem-app
+    # build值为 . 表示从当前目录找Dockerfile进行构建
+#    build: ruoyi-admin
+    restart: always
+    container_name: v2node-app
+    # 对外暴露端口 8088
+    ports:
+      - 8088:8088
+    # 后端项目需要的配置，可修改
+    environment:
+      - PARAM=-Dspring.profiles.active=druid
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DATABASE=0
+      - REDIS_PASSWORD=aefc7fe #与redis --requirepass 密码保持一致
+      - V2NODE_MYSQL_HOST=mysql
+      - V2NODE_MYSQL_PORT=3306
+      - V2NODE_MYSQL_DBNAME=v2node
+      - V2NODE_MYSQL_USERNAME=v2nodemanager #与 mysql MYSQL_USER 参数保持一致
+      - V2NODE_MYSQL_PASSWORD=7df7ffee #与mysql MYSQL_PASSWORD 参数保持一致
+      - V2BOARD_MYSQL_HOST=  #填写您v2board 数据库地址
+      - V2BOARD_MYSQL_PORT=  #修改为您v2board 数据库端口
+      - V2BOARD_MYSQL_DBNAME=  #修改为您v2board 数据库名称
+      - V2BOARD_MYSQL_USERNAME=  #修改为您 v2board 数据库用户名
+      - V2BOARD_MYSQL_PASSWORD=  #修改为您v2board 数据库密码
+    depends_on:
+      - redis
+      - mysql
+    links:
+      - redis
+      - mysql
