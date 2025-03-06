@@ -19,6 +19,7 @@ services:
   redis:
     image: library/redis:alpine
     container_name: v2node-redis
+    restart: always
     ports:
       - 6399:6379
     # 给redis设置密码
@@ -29,6 +30,7 @@ services:
     image: mrliling/v2nodem-web
 #    build: ruoyi-ui
     container_name: v2node-web
+    restart: always
     ports:
       - 8099:80
     depends_on:
