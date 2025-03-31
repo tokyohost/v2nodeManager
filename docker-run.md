@@ -12,6 +12,18 @@ git clone https://github.com/tokyohost/v2nodeManager
 cd v2nodeManager/
 docker-compose up -d
 ```
+### docker 停止
+```shell
+cd v2nodeManager/
+docker-compose stop
+```
+
+### docker 卸载
+```shell
+cd v2nodeManager/
+docker-compose down
+docker-compose rm -f
+```
 
 ### 访问管理端
 ```http request
