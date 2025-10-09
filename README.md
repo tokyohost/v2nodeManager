@@ -222,7 +222,7 @@ redis 7.0
     </tr>
     <tr>
         <td>Docker 部署</td>
-        <td>❌</td>
+        <td>✔</td>
     </tr>
 
 
