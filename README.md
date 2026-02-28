@@ -17,6 +17,18 @@
 2.  域名管理：管理用户CF 所有的已绑定域名，包括新增删除DNS 同步生成对应DNS 的XrayR 配置文件到对应服务器。
 
 ## docker部署
+### docker 环境
+请提前准备docker 和docker-compose 环境
+### 修改配置文件
+请 将docker-compose 文件中mysql 密码、redis 密码、v2board 数据库配置修改好后再运行 ！
+
+### docker 运行
+
+```shell
+git clone https://github.com/tokyohost/v2nodeManager
+cd v2nodeManager/
+docker-compose up -d
+```
 详见 [点击这里跳转到docker快速部署指南](docker-run.md)
 
 
