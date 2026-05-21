@@ -1,0 +1,75 @@
+name: 构建前端镜像
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 镜像标签，留空时使用提交短 SHA
+        required: false
+        default: ""
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - ruoyi-ui/**
+      - .github/workflows/frontend-docker.yml
+
+env:
+  IMAGE_NAME: v2nodem-web
+
+jobs:
+  docker:
+    name: 构建并推送前端镜像
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE }}
+
+    steps:
+      - name: 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 登录 Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: 生成镜像标签
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${{ github.event.inputs.image_tag }}"
+          if [ -z "$tag" ]; then
+            tag="${GITHUB_SHA::7}"
+          fi
+
+          test -n "${DOCKERHUB_USERNAME}" || (echo "DOCKERHUB_USERNAME 未设置" && exit 1)
+          namespace="${DOCKERHUB_NAMESPACE:-$DOCKERHUB_USERNAME}"
+          image="${namespace}/${IMAGE_NAME}"
+
+          {
+            echo "image=${image}"
+            echo "tags<<EOF"
+            echo "${image}:${tag}"
+            echo "${image}:latest"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: 构建并推送
+        uses: docker/build-push-action@v6
+        with:
+          context: ruoyi-ui
+          file: ruoyi-ui/Dockerfile.github
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

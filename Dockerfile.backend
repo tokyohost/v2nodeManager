@@ -1,0 +1,52 @@
+# 后端大包镜像：第一阶段在容器内编译，第二阶段只保留运行环境和 jar。
+FROM m.daocloud.io/docker.io/library/maven:3.8.8-eclipse-temurin-8 AS builder
+
+WORKDIR /build
+
+# 先复制 pom，尽量利用 Docker 层缓存。
+COPY pom.xml ./
+COPY ruoyi-admin/pom.xml ruoyi-admin/pom.xml
+COPY ruoyi-common/pom.xml ruoyi-common/pom.xml
+COPY ruoyi-framework/pom.xml ruoyi-framework/pom.xml
+COPY ruoyi-generator/pom.xml ruoyi-generator/pom.xml
+COPY ruoyi-quartz/pom.xml ruoyi-quartz/pom.xml
+COPY ruoyi-system/pom.xml ruoyi-system/pom.xml
+COPY v2node/pom.xml v2node/pom.xml
+
+# 再复制源码并打包。
+COPY ruoyi-admin ruoyi-admin
+COPY ruoyi-common ruoyi-common
+COPY ruoyi-framework ruoyi-framework
+COPY ruoyi-generator ruoyi-generator
+COPY ruoyi-quartz ruoyi-quartz
+COPY ruoyi-system ruoyi-system
+COPY v2node v2node
+
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn clean package -DskipTests -B -T 1C
+
+FROM m.daocloud.io/docker.io/library/eclipse-temurin:8-jre
+
+LABEL maintainer="tokyohost"
+
+RUN mkdir -p /ruoyi/server/logs /ruoyi/server/temp
+
+WORKDIR /ruoyi/server
+
+ENV SERVER_PORT=8088 \
+    LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    JAVA_OPTS="" \
+    PARAM=""
+
+EXPOSE ${SERVER_PORT}
+
+COPY --from=builder /build/ruoyi-admin/target/*.jar ./app.jar
+
+SHELL ["/bin/sh", "-c"]
+
+ENTRYPOINT java -Djava.security.egd=file:/dev/./urandom \
+    -Dserver.port=${SERVER_PORT} \
+    -XX:+HeapDumpOnOutOfMemoryError \
+    ${JAVA_OPTS} ${PARAM} \
+    -jar app.jar

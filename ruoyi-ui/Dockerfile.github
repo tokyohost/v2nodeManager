@@ -1,0 +1,33 @@
+# 前端大包镜像：第一阶段在容器内构建 dist，第二阶段使用 Nginx 提供静态文件。
+FROM m.daocloud.io/docker.io/library/node:16-slim AS builder
+
+WORKDIR /app
+
+RUN npm config set registry https://registry.npmmirror.com
+
+COPY package*.json ./
+
+RUN npm ci --legacy-peer-deps
+
+COPY . .
+
+RUN npm run build:prod
+
+FROM m.daocloud.io/docker.io/library/nginx:stable-alpine
+
+LABEL maintainer="tokyohost"
+
+ENV RUN_USER=nginx \
+    RUN_GROUP=nginx \
+    DATA_DIR=/data/dist \
+    LOG_DIR=/data/log/nginx
+
+RUN mkdir -p ${DATA_DIR} ${LOG_DIR} \
+    && chown -R nginx:nginx ${DATA_DIR} ${LOG_DIR}
+
+COPY --from=builder /app/dist ${DATA_DIR}
+COPY conf/nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
