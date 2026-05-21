@@ -33,6 +33,13 @@ export function getNodeList(type) {
     timeout:90000
   })
 }
+export function checkVlessSupport() {
+  return request({
+    url: '/system/server/checkVlessSupport',
+    method: 'get',
+    timeout: 90000
+  })
+}
 export function checkInstallStatus(id) {
   return request({
     url: '/system/server/checkInstallStatus/' + id,

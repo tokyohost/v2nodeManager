@@ -88,7 +88,8 @@ public class VmessServiceImpl implements V2NodeService {
         try {
             shellone.init(v2Server.getIp(), Integer.valueOf(v2Server.getPort()), v2Server.getUser(), v2Server.getPasswd());
 
-            shellone.execCmdAndClose("nohup " + xrayRScript + " & ");
+            String command = "nohup sh -c '" + xrayRScript.replace("'", "'\"'\"'") + "' > /tmp/xrayr-install.log 2>&1 < /dev/null &";
+            shellone.execCmdAndClose(command);
             return AjaxResult.success("下发安装命令完成,请稍后检查安装状态");
         } catch (JSchException e) {
             return AjaxResult.error(e.getMessage());

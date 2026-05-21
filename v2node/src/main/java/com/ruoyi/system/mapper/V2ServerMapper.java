@@ -68,6 +68,12 @@ public interface V2ServerMapper
 
     void updateV2Node(@Param("nodeId") Long nodeId, @Param("content") String content);
 
+    void updateV2VlessNode(@Param("nodeId") Long nodeId, @Param("content") String content);
+
     List<V2Node> selectV2NodeInfoByNodeIds(@Param("nodeids") List<Long> nodeids);
+
+    List<V2Node> selectV2VlessNodeInfoByNodeIds(@Param("nodeids") List<Long> nodeids);
+
+    int checkVlessTableExists();
 
 }

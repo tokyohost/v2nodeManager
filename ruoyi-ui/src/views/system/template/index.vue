@@ -174,6 +174,10 @@ export default {
           label: 'vmess'
         },
         {
+          value: 'vless',
+          label: 'vless'
+        },
+        {
           value: 'soga',
           label: 'soga'
         },

@@ -9,6 +9,7 @@ package com.ruoyi.system.constant;
 
 public enum NodeTypeEnum {
     VMESS("vmess"),
+    VLESS("vless"),
     SOGA("soga");
 
     String type;

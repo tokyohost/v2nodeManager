@@ -7,6 +7,7 @@ import com.ruoyi.common.enums.DataSourceType;
 import com.ruoyi.common.utils.ShellUtil;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.agreementStrategy.V2NodeService;
+import com.ruoyi.system.constant.NodeTypeEnum;
 import com.ruoyi.system.domain.NodeVo;
 import com.ruoyi.system.domain.V2Dns;
 import com.ruoyi.system.domain.V2Node;
@@ -29,6 +30,8 @@ import java.util.Objects;
  */
 @Service
 public class V2ServerServiceImpl implements IV2ServerService {
+    private static final String V2BX_TIP = "当前 v2board 数据库未找到 v2_server_vless 表，请切换为 V2bX 管理平台：https://github.com/wyx2685/V2bX";
+
     @Autowired
     private V2ServerMapper v2ServerMapper;
 
@@ -168,11 +171,26 @@ public class V2ServerServiceImpl implements IV2ServerService {
 
     @Override
     @DataSource(value = DataSourceType.v2board)
+    public void updateV2VlessNode(Long nodeId, String content) {
+        v2ServerMapper.updateV2VlessNode(nodeId, content);
+    }
+
+    @Override
+    @DataSource(value = DataSourceType.v2board)
     public List<V2Node> selectV2NodeInfoByNodeIds(List<Long> nodeids) {
         if (CollectionUtils.isEmpty(nodeids)) {
             return new ArrayList<>();
         }
         return v2ServerMapper.selectV2NodeInfoByNodeIds(nodeids);
+    }
+
+    @Override
+    @DataSource(value = DataSourceType.v2board)
+    public List<V2Node> selectV2VlessNodeInfoByNodeIds(List<Long> nodeids) {
+        if (CollectionUtils.isEmpty(nodeids) || !isVlessTableExists()) {
+            return new ArrayList<>();
+        }
+        return v2ServerMapper.selectV2VlessNodeInfoByNodeIds(nodeids);
     }
 
     @Override
@@ -214,9 +232,13 @@ public class V2ServerServiceImpl implements IV2ServerService {
     }
 
     @Override
+    @DataSource(value = DataSourceType.v2board)
     public AjaxResult queryNodeList(V2Server v2Server) {
         if (StringUtils.isEmpty(v2Server.getNodeType())) {
             return AjaxResult.success(new ArrayList<>());
+        }
+        if (NodeTypeEnum.VLESS.getType().equals(v2Server.getNodeType()) && !isVlessTableExists()) {
+            return AjaxResult.error(V2BX_TIP);
         }
         V2NodeService v2NodeService = manager.getV2NodeService(v2Server.getNodeType());
         if (Objects.isNull(v2NodeService)) {
@@ -225,5 +247,19 @@ public class V2ServerServiceImpl implements IV2ServerService {
         List<NodeVo> nodeVos = v2NodeService.queryList(new NodeVo());
 
         return AjaxResult.success(nodeVos);
+    }
+
+    @Override
+    @DataSource(value = DataSourceType.v2board)
+    public AjaxResult checkVlessSupport() {
+        if (isVlessTableExists()) {
+            return AjaxResult.success();
+        }
+        return AjaxResult.error(V2BX_TIP);
+    }
+
+    @DataSource(value = DataSourceType.v2board)
+    public boolean isVlessTableExists() {
+        return v2ServerMapper.checkVlessTableExists() > 0;
     }
 }

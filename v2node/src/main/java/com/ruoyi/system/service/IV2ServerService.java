@@ -76,11 +76,17 @@ public interface IV2ServerService
 
     void updateV2Node(Long nodeId, String content);
 
+    void updateV2VlessNode(Long nodeId, String content);
+
     List<V2Node> selectV2NodeInfoByNodeIds(List<Long> nodeids);
+
+    List<V2Node> selectV2VlessNodeInfoByNodeIds(List<Long> nodeids);
 
     AjaxResult quickHostReplace(V2Dns data);
 
     AjaxResult updateVersion(Long id, String version);
 
     AjaxResult queryNodeList(V2Server v2Server);
+
+    AjaxResult checkVlessSupport();
 }

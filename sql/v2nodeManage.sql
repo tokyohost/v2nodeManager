@@ -958,3 +958,15 @@ INSERT INTO `v2_file_template` (`id`, `content`, `remark`, `file_name`, `file_ty
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (107, 'SogaCheckVersion', 'SogaCheckVersion', 'soga version', 'Y', 'admin', '2025-02-24 16:17:15', '', NULL, NULL);
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (108, 'SogaScript', 'SogaScript', 'wget -N https://github.com/sprov065/soga/raw/master/soga.sh  -O soga.sh  && chmod +x soga.sh && bash soga.sh install ', 'Y', 'admin', '2025-02-24 16:22:24', 'admin', '2025-02-25 10:59:56', NULL);
 INSERT INTO `sys_config` (`config_id`, `config_name`, `config_key`, `config_value`, `config_type`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`) VALUES (109, 'SogaUpdateVersion', 'SogaUpdateVersion', 'soga update {version}', 'Y', 'admin', '2025-02-25 11:27:46', 'admin', '2025-02-25 11:29:49', NULL);
+-- 1.4.0 vless 配置文件模板
+INSERT INTO `v2_file_template` (`content`, `remark`, `file_name`, `file_type`)
+SELECT 'Log:\n  Level: none\n  AccessPath:\n  ErrorPath:\nDnsConfigPath:\nRouteConfigPath:\nOutboundConfigPath:\nConnetionConfig:\n  Handshake: 4\n  ConnIdle: 30\n  UplinkOnly: 2\n  DownlinkOnly: 4\n  BufferSize: 64\nNodes:\n  -\n    PanelType: \"V2board\"\n    ApiConfig:\n      ApiHost: \"${apiHost}\"\n      ApiKey: \"${apiKey}\"\n      NodeID: ${nodeId}\n      NodeType: V2ray\n      Timeout: 30\n      EnableVless: true\n      EnableXTLS: false\n      SpeedLimit: 0\n      DeviceLimit: 0\n      RuleListPath:\n    ControllerConfig:\n      ListenIP: 0.0.0.0\n      SendIP: 0.0.0.0\n      UpdatePeriodic: 60\n      EnableDNS: false\n      DNSType: AsIs\n      EnableProxyProtocol: false\n      EnableFallback: false\n      FallBackConfigs:\n        -\n          SNI:\n          Path:\n          Dest: 80\n          ProxyProtocolVer: 0\n      CertConfig:\n        CertMode: http\n        CertDomain: \"${certDomain}\"\n        CertFile:\n        KeyFile:\n        Provider: cloudflare\n        Email: ${cfEmail}\n        DNSEnv:\n          CF_DNS_API_TOKEN: ${cfToken}\n',
+       'vless 节点 XrayR 配置文件模板',
+       'vless-config.yml',
+       'vless'
+FROM DUAL
+WHERE NOT EXISTS (
+    SELECT 1 FROM `v2_file_template`
+    WHERE `file_type` = 'vless'
+      AND `file_name` = 'vless-config.yml'
+);

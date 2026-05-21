@@ -91,7 +91,7 @@
             v-hasPermi="['system:server:remove']"
           >删除
           </el-button>
-          <span v-if="scope.row.nodeType === 'vmess'">
+          <span v-if="scope.row.nodeType === 'vmess' || scope.row.nodeType === 'vless'">
             <el-button
               size="mini"
               type="text"
@@ -261,6 +261,7 @@
 <script>
 import {
   addServer,
+  checkVlessSupport,
   checkInstallStatus,
   delServer,
   getNodeList,
@@ -330,6 +331,10 @@ export default {
           label: 'vmess'
         },
         {
+          value: 'vless',
+          label: 'vless'
+        },
+        {
           value: 'soga',
           label: 'soga'
         },
@@ -395,6 +400,16 @@ export default {
     async nodeTypeChange(value) {
       console.log(value)
       let loadingInstance = Loading.service({fullscreen: true});
+      if (value === 'vless') {
+        try {
+          await checkVlessSupport()
+        } catch (e) {
+          this.nodeList = []
+          this.form.nodeId = null
+          loadingInstance.close()
+          return
+        }
+      }
       await getNodeList(value).then((res) => {
         console.log(res)
         this.nodeList = res.data
@@ -407,6 +422,8 @@ export default {
     },
     changeFileConfigPath(agreementType) {
       if (agreementType === "vmess") {
+        return "/etc/XrayR/config.yml";
+      } else if (agreementType === "vless") {
         return "/etc/XrayR/config.yml";
       } else if (agreementType === "soga") {
         return "/etc/soga/soga.conf"
@@ -535,6 +552,7 @@ export default {
             if (response.code == 200) {
               this.$message.success("更换成功")
               this.getList()
+              this.showReplaceHost = false
             }
           }).catch((e) => {
             this.loading = false

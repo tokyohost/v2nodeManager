@@ -114,6 +114,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update v2_server_vmess set host=#{content} where id = #{nodeId}
     </update>
 
+    <update id="updateV2VlessNode">
+        update v2_server_vless set host=#{content} where id = #{nodeId}
+    </update>
+
     <select id="selectV2NodeInfoByNodeIds" resultMap="V2NodeResult">
         select * from v2_server_vmess where id in
         <foreach collection="nodeids" item="id" open="(" close=")" separator="," >
@@ -121,5 +125,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         </foreach>
 
 
+    </select>
+
+    <select id="selectV2VlessNodeInfoByNodeIds" resultMap="V2NodeResult">
+        select * from v2_server_vless where id in
+        <foreach collection="nodeids" item="id" open="(" close=")" separator="," >
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="checkVlessTableExists" resultType="int">
+        select count(1)
+        from information_schema.TABLES
+        where TABLE_SCHEMA = database()
+          and TABLE_NAME = 'v2_server_vless'
     </select>
 </mapper>

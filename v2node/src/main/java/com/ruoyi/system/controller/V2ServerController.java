@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.constant.NodeTypeEnum;
 import com.ruoyi.system.domain.V2Dns;
 import com.ruoyi.system.domain.V2Node;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,11 +49,18 @@ public class V2ServerController extends BaseController
     {
         startPage();
         List<V2Server> list = v2ServerService.selectV2ServerList(v2Server);
-        List<V2Node> v2Nodes = v2ServerService.selectV2NodeInfoByNodeIds(list.stream().map(V2Server::getNodeId).collect(Collectors.toList()));
+        List<V2Node> v2Nodes = v2ServerService.selectV2NodeInfoByNodeIds(list.stream()
+                .filter(item -> !NodeTypeEnum.VLESS.getType().equals(item.getNodeType()))
+                .map(V2Server::getNodeId).collect(Collectors.toList()));
+        List<V2Node> vlessNodes = v2ServerService.selectV2VlessNodeInfoByNodeIds(list.stream()
+                .filter(item -> NodeTypeEnum.VLESS.getType().equals(item.getNodeType()))
+                .map(V2Server::getNodeId).collect(Collectors.toList()));
         Map<Long, V2Node> nodeMap = v2Nodes.stream().collect(Collectors.toMap(V2Node::getId, item->item));
+        Map<Long, V2Node> vlessNodeMap = vlessNodes.stream().collect(Collectors.toMap(V2Node::getId, item->item));
         for (V2Server server : list) {
-            if (nodeMap.containsKey(server.getNodeId())) {
-                V2Node v2Node = nodeMap.get(server.getNodeId());
+            Map<Long, V2Node> currentNodeMap = NodeTypeEnum.VLESS.getType().equals(server.getNodeType()) ? vlessNodeMap : nodeMap;
+            if (currentNodeMap.containsKey(server.getNodeId())) {
+                V2Node v2Node = currentNodeMap.get(server.getNodeId());
                 server.setNodeHost(v2Node.getHost());
                 server.setNodeName(v2Node.getName());
             }
@@ -68,6 +76,13 @@ public class V2ServerController extends BaseController
 //        startPage();
         List<V2Server> list = v2ServerService.selectV2ServerList(v2Server);
         return AjaxResult.success(list);
+    }
+
+    @PreAuthorize("@ss.hasPermi('system:server:queryV2NodeList')")
+    @GetMapping(value = "/checkVlessSupport")
+    public AjaxResult checkVlessSupport()
+    {
+        return v2ServerService.checkVlessSupport();
     }
 
     /**
