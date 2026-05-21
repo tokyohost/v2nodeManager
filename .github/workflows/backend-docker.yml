@@ -7,21 +7,6 @@ on:
         description: 镜像标签，留空时使用提交短 SHA
         required: false
         default: ""
-  push:
-    branches:
-      - master
-      - main
-    paths:
-      - Dockerfile.backend
-      - pom.xml
-      - ruoyi-admin/**
-      - ruoyi-common/**
-      - ruoyi-framework/**
-      - ruoyi-generator/**
-      - ruoyi-quartz/**
-      - ruoyi-system/**
-      - v2node/**
-      - .github/workflows/backend-docker.yml
 
 env:
   IMAGE_NAME: v2nodem-app

@@ -7,13 +7,6 @@ on:
         description: 镜像标签，留空时使用提交短 SHA
         required: false
         default: ""
-  push:
-    branches:
-      - master
-      - main
-    paths:
-      - ruoyi-ui/**
-      - .github/workflows/frontend-docker.yml
 
 env:
   IMAGE_NAME: v2nodem-web
